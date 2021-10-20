@@ -42,12 +42,12 @@ services:
     ports:
       # API port
       - '5000'
-    env_file: ../easy-dog-backend/src/env/.env.production
+    env_file: ../easy-dog-backend/app/env/.env.production
     volumes:
       # Sync host date with container date  
       - /etc/localtime:/etc/localtime:ro
     build:
-      context: ../easy-dog-backend/src/
+      context: ../easy-dog-backend/app/
       dockerfile: Dockerfile
 
 networks: 
