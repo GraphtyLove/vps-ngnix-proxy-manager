@@ -21,10 +21,10 @@ services:
       # sync host date with container date 
       - /etc/localtime:/etc/localtime:ro
     depends_on:
-      - db
+      - ngnix-db
       - easy-dog-backend
   
-  db:
+  ngnix-db:
     image: 'jc21/mariadb-aria:latest'
     networks:
         - ngnix
