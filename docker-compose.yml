@@ -23,6 +23,7 @@ services:
     depends_on:
       - ngnix-db
       - easy-dog-backend
+      - mongo
   
   ngnix-db:
     image: 'jc21/mariadb-aria:latest'
@@ -36,7 +37,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
   
   easy-dog-backend:
-    image: 'easy-dog-backend:production'
+    image: 'easy-dog-backend:local'
     # Enable colors for strapi's LOGs
     tty: true
     networks:
@@ -47,7 +48,7 @@ services:
       - '5000'
     env_file: ../easy-dog-backend/app/env/.env.production
     volumes:
-      - .:/srv/app
+      - ../easy-dog-backend/app:/srv/app
       # Prevent local node_modules to be copied.
       - /srv/app/node_modules
       # Sync host date with container date  
