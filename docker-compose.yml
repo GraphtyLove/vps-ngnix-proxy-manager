@@ -1,0 +1,54 @@
+version: "3"
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    networks:
+        - ngnix
+    restart: unless-stopped
+    ports:
+      # Public HTTP Port:
+      - '80:80'
+      # Public HTTPS Port:
+      - '443:443'
+      # Admin Web Port:
+      - '81:81'
+      # Add any other Stream port you want to expose
+      # - '21:21' # FTP (need to be open to use streams)
+    env_file: ./env/.env.ngnix
+    volumes:
+      - ./docker-volumes/data:/data
+      - ./docker-volumes/letsencrypt:/etc/letsencrypt
+      # sync host date with container date 
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - db
+      - easy-dog-backend
+  
+  db:
+    image: 'jc21/mariadb-aria:latest'
+    networks:
+        - ngnix
+    restart: unless-stopped
+    env_file: ./env/.env.mysql
+    volumes:
+      - ./docker-volumes/data/mysql:/var/lib/mysql
+      # Sync host date with container date
+      - /etc/localtime:/etc/localtime:ro
+  easy-dog-backend:
+    image: 'easy-dog-backend:production'
+    networks:
+        - ngnix
+    restart: unless-stopped
+    ports:
+      # API port
+      - '5000'
+    env_file: ../easy-dog-backend/src/env/.env.production
+    volumes:
+      # Sync host date with container date  
+      - /etc/localtime:/etc/localtime:ro
+    build:
+      context: ../easy-dog-backend/src/
+      dockerfile: Dockerfile
+
+networks: 
+    ngnix:

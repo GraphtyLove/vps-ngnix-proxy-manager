@@ -1,0 +1,7 @@
+.DS_Store
+.idea
+.vscode
+env/.env.mysql
+env/.env.ngnix
+docker-volumes/data
+docker-volumes/letsencrypt
