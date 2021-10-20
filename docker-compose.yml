@@ -34,8 +34,11 @@ services:
       - ./docker-volumes/data/mysql:/var/lib/mysql
       # Sync host date with container date
       - /etc/localtime:/etc/localtime:ro
+  
   easy-dog-backend:
     image: 'easy-dog-backend:production'
+    # Enable colors for strapi's LOGs
+    tty: true
     networks:
         - ngnix
     restart: unless-stopped
@@ -44,11 +47,27 @@ services:
       - '5000'
     env_file: ../easy-dog-backend/app/env/.env.production
     volumes:
+      - .:/srv/app
+      # Prevent local node_modules to be copied.
+      - /srv/app/node_modules
       # Sync host date with container date  
       - /etc/localtime:/etc/localtime:ro
     build:
       context: ../easy-dog-backend/app/
       dockerfile: Dockerfile
+    depends_on:
+      - mongo
+  
+  mongo:
+    image: mongo
+    env_file:
+      - ../easy-dog-backend/app/env/.env.${ENV}
+    volumes:
+      - ../easy-dog-backend/data-${ENV}:/data/db
+      # Sync time server/container
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - ngnix
 
 networks: 
     ngnix:
