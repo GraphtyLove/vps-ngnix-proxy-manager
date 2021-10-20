@@ -61,9 +61,9 @@ services:
   mongo:
     image: mongo
     env_file:
-      - ../easy-dog-backend/app/env/.env.${ENV}
+      - ../easy-dog-backend/app/env/.env.production
     volumes:
-      - ../easy-dog-backend/data-${ENV}:/data/db
+      - ../easy-dog-backend/data-production:/data/db
       # Sync time server/container
       - /etc/localtime:/etc/localtime:ro
     networks:
